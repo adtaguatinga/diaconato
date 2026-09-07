@@ -11,16 +11,35 @@
       <p class="text-xs sm:text-sm text-slate-400 mt-1">Gerencie as datas e horários em que os obreiros não estão disponíveis para escala.</p>
     </div>
 
-    @if (authService.canManageBloqueios()) {
-      <button 
-        (click)="openCreateModal()"
-        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-indigo-600/25 transition-all transform active:scale-95 self-start sm:self-auto">
-        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg>
-        <span>Novo Bloqueio</span>
-      </button>
-    }
+    <div class="flex items-center gap-2 flex-wrap justify-end">
+      @if (authService.canManagePadroesBloqueio()) {
+        <!-- Link para Padrões de Bloqueio -->
+        <a 
+          routerLink="/bloqueios/padroes"
+          class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-semibold transition-all shadow-sm">
+          <span>⚙️ Padrões Recorrentes</span>
+        </a>
+
+        <!-- Botão Gerar Bloqueios -->
+        <button 
+          type="button"
+          (click)="isGeradorModalOpen = true"
+          class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-amber-600/20 hover:bg-amber-600 text-amber-300 hover:text-white border border-amber-500/30 text-xs sm:text-sm font-bold transition-all shadow-sm active:scale-95">
+          <span>⚡ Gerar Automático</span>
+        </button>
+      }
+
+      @if (authService.canManageBloqueios()) {
+        <button 
+          (click)="openCreateModal()"
+          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-indigo-600/25 transition-all transform active:scale-95">
+          <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Novo Bloqueio</span>
+        </button>
+      }
+    </div>
   </div>
 
   <!-- KPI / Stats Summary Cards -->
@@ -500,5 +519,14 @@
     type="danger" 
     (confirm)="handleDelete()" 
     (cancel)="closeConfirm()" 
+  />
+
+  <app-gerador-bloqueios-modal 
+    [isOpen]="isGeradorModalOpen" 
+    [meses]="mesService.meses()" 
+    [obreiros]="obreiroService.obreiros()" 
+    [padroes]="padraoService.padroes()"
+    (generated)="bloqueioService.fetchAll()"
+    (close)="isGeradorModalOpen = false" 
   />
 </div>

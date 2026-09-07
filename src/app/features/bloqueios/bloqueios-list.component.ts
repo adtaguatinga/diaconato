@@ -1,15 +1,18 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { BloqueioService } from '../../core/services/bloqueio.service';
 import { ObreiroService } from '../../core/services/obreiro.service';
 import { MesService } from '../../core/services/mes.service';
+import { PadraoBloqueioService } from '../../core/services/padrao-bloqueio.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Bloqueio, CreateBloqueioDto } from '../../core/models/bloqueio.model';
 import { Obreiro } from '../../core/models/obreiro.model';
 import { formatMesReferencia, findCurrentMes } from '../../core/models/mes.model';
 import { TURNO_LABELS, TURNO_COLORS, TurnoEnum } from '../../core/models/turno.enum';
 import { BloqueioModalComponent, BloqueioBatchPayload } from './bloqueio-modal.component';
+import { GeradorBloqueiosModalComponent } from './gerador-bloqueios-modal.component';
 import { ConfirmModalComponent } from '../../shared/components/confirm-modal.component';
 
 export interface ObreiroBloqueioGroup {
@@ -34,12 +37,20 @@ export interface DiaBloqueioGroup {
 @Component({
   selector: 'app-bloqueios-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, BloqueioModalComponent, ConfirmModalComponent],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    RouterModule,
+    BloqueioModalComponent, 
+    GeradorBloqueiosModalComponent,
+    ConfirmModalComponent
+  ],
   templateUrl: './bloqueios-list.component.html'
 })
 export class BloqueiosListComponent implements OnInit {
   authService = inject(AuthService);
   bloqueioService = inject(BloqueioService);
+  padraoService = inject(PadraoBloqueioService);
   obreiroService = inject(ObreiroService);
   mesService = inject(MesService);
 
@@ -48,12 +59,17 @@ export class BloqueiosListComponent implements OnInit {
   viewMode: 'obreiros' | 'dias' = 'obreiros';
 
   bloqueios = this.bloqueioService.bloqueios;
+  padroes = this.padraoService.padroes;
+  obreiros = this.obreiroService.obreiros;
+  meses = this.mesService.meses;
+
   searchQuery = signal<string>('');
   selectedObreiroFilter = signal<number>(0);
   selectedMesFilter = signal<string>(''); // e.g. '2026-09' or ''
   TurnoEnum = TurnoEnum;
 
   isModalOpen = false;
+  isGeradorModalOpen = false;
   isConfirmOpen = false;
   selectedBloqueio: Bloqueio | null = null;
   selectedGroupToDelete: ObreiroBloqueioGroup | null = null;
@@ -227,6 +243,7 @@ export class BloqueiosListComponent implements OnInit {
 
   async ngOnInit() {
     this.bloqueioService.fetchAll();
+    this.padraoService.fetchAll();
     this.obreiroService.fetchAll();
     const meses = await this.mesService.fetchAll();
     if (!this.selectedMesFilter()) {

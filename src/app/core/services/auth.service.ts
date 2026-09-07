@@ -36,6 +36,7 @@ export class AuthService {
   canViewReports = computed(() => this.isAdmin() || this.isManager() || this.isOperator());
   canViewObreiros = computed(() => this.isAdmin() || this.isManager() || this.isOperator());
   canViewBloqueios = computed(() => this.isAdmin() || this.isManager() || this.isOperator());
+  canManagePadroesBloqueio = computed(() => this.isAdmin());
 
   hasRole(allowedRoles: UserRole[]): boolean {
     return allowedRoles.includes(this.userRole());

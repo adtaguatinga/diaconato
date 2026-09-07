@@ -10,6 +10,7 @@ import { Bloqueio } from '../../core/models/bloqueio.model';
 import { formatMesReferencia, MESES_NOMES } from '../../core/models/mes.model';
 import { TurnoEnum, TURNO_LABELS } from '../../core/models/turno.enum';
 import { DIAS_SEMANA_LABELS } from '../../core/models/tipo-evento.model';
+import { DIAS_SEMANA_OPCOES } from '../../core/models/padrao-bloqueio.model';
 
 export type AusenciaTipoMode = 'especifico' | 'periodo' | 'par_impar' | 'dia_semana';
 
@@ -54,6 +55,9 @@ export class PortalBloqueiosComponent implements OnInit {
   mode: AusenciaTipoMode = 'especifico';
   TurnoEnum = TurnoEnum;
   TURNO_LABELS = TURNO_LABELS;
+  DIAS_SEMANA_OPCOES = DIAS_SEMANA_OPCOES;
+
+  diasSemanaSelecionados: Set<number> = new Set(); // Inicialmente vazio
 
   diasSemanaList = Object.entries(DIAS_SEMANA_LABELS).map(([val, name]) => ({
     value: Number(val),
@@ -154,6 +158,33 @@ export class PortalBloqueiosComponent implements OnInit {
     this.mode = newMode;
   }
 
+  toggleDiaSemana(dia: number) {
+    const next = new Set(this.diasSemanaSelecionados);
+    if (next.has(dia)) {
+      next.delete(dia);
+    } else {
+      next.add(dia);
+    }
+    this.diasSemanaSelecionados = next;
+  }
+
+  selecionarAtalhoDias(atalho: 'todos' | 'uteis' | 'fim_semana' | 'domingos') {
+    switch (atalho) {
+      case 'todos':
+        this.diasSemanaSelecionados = new Set([1, 2, 3, 4, 5, 6, 7]);
+        break;
+      case 'uteis':
+        this.diasSemanaSelecionados = new Set([2, 3, 4, 5, 6]);
+        break;
+      case 'fim_semana':
+        this.diasSemanaSelecionados = new Set([1, 7]);
+        break;
+      case 'domingos':
+        this.diasSemanaSelecionados = new Set([1]);
+        break;
+    }
+  }
+
   private initForm() {
     const today = new Date();
     const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
@@ -166,13 +197,14 @@ export class PortalBloqueiosComponent implements OnInit {
     const initialMesRef = matchingMes ? matchingMes.key : (this.mesesList[0]?.key || defaultMesKeyNextMonth);
     const initialDate = this.hojeStr;
 
+    this.diasSemanaSelecionados = new Set(); // Inicialmente nenhum dia da semana selecionado
+
     this.form = this.fb.group({
       data: [initialDate, [Validators.required]],
       data_inicio: [initialDate, [Validators.required]],
       data_fim: [initialDate, [Validators.required]],
       mes_ref: [initialMesRef],
       paridade: ['pares'],
-      dia_semana: [1], // Domingo
       manha: [true],
       tarde: [true],
       noite: [true],
@@ -258,8 +290,7 @@ export class PortalBloqueiosComponent implements OnInit {
 
     if (this.mode === 'dia_semana') {
       const mesKey = raw.mes_ref;
-      const targetDayOfWeek = Number(raw.dia_semana);
-      if (!mesKey || !targetDayOfWeek) return [];
+      if (!mesKey || this.diasSemanaSelecionados.size === 0) return [];
       const [yearStr, monthStr] = mesKey.split('-');
       const year = Number(yearStr);
       const month = Number(monthStr);
@@ -269,7 +300,7 @@ export class PortalBloqueiosComponent implements OnInit {
       for (let day = 1; day <= totalDays; day++) {
         const d = new Date(year, month - 1, day);
         const currentDayOfWeek = d.getDay() + 1;
-        if (currentDayOfWeek === targetDayOfWeek) {
+        if (this.diasSemanaSelecionados.has(currentDayOfWeek)) {
           const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
           list.push(dateStr);
         }
@@ -285,8 +316,14 @@ export class PortalBloqueiosComponent implements OnInit {
     return !!(this.form.get('manha')?.value || this.form.get('tarde')?.value || this.form.get('noite')?.value);
   }
 
+  isTodosTurnosSelecionados(): boolean {
+    if (!this.form) return false;
+    return !!(this.form.get('manha')?.value && this.form.get('tarde')?.value && this.form.get('noite')?.value);
+  }
+
   getSelectedTurnosCount(): number {
     if (!this.form) return 0;
+    if (this.isTodosTurnosSelecionados()) return 1;
     let count = 0;
     if (this.form.get('manha')?.value) count++;
     if (this.form.get('tarde')?.value) count++;
@@ -325,9 +362,13 @@ export class PortalBloqueiosComponent implements OnInit {
     const raw = this.form.value;
     const dates = this.calculatedDates;
     const turnos: number[] = [];
-    if (raw.manha) turnos.push(TurnoEnum.MANHA);
-    if (raw.tarde) turnos.push(TurnoEnum.TARDE);
-    if (raw.noite) turnos.push(TurnoEnum.NOITE);
+    if (raw.manha && raw.tarde && raw.noite) {
+      turnos.push(TurnoEnum.INTEGRAL);
+    } else {
+      if (raw.manha) turnos.push(TurnoEnum.MANHA);
+      if (raw.tarde) turnos.push(TurnoEnum.TARDE);
+      if (raw.noite) turnos.push(TurnoEnum.NOITE);
+    }
 
     const motivoFormatado = raw.motivo?.trim() || null;
 

@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS public.eventos CASCADE;
 DROP TABLE IF EXISTS public.tipo_evento CASCADE;
 DROP TABLE IF EXISTS public.mes CASCADE;
 DROP TABLE IF EXISTS public.obreiros CASCADE;
+DROP TABLE IF EXISTS public.padroes_bloqueio CASCADE;
 
 -- 1. Tabela Obreiros
 CREATE TABLE IF NOT EXISTS public.obreiros (
@@ -148,19 +149,39 @@ CREATE TABLE IF NOT EXISTS public.usuarios (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Políticas de Acesso RLS para Usuários (apenas usuários requer RLS por segurança)
-ALTER TABLE public.usuarios ENABLE ROW LEVEL SECURITY;
+CREATE TABLE IF NOT EXISTS public.padroes_bloqueio (
+    id_padrao_bloqueio SERIAL PRIMARY KEY,
+    id_obreiro INTEGER NOT NULL REFERENCES public.obreiros(id_obreiro) ON DELETE CASCADE,
+    
+    -- Tipo da Regra: 'dias_semana', 'paridade', 'faixa_dias', 'semanas_mes', 'dias_mes', 'escala_plantao'
+    tipo_regra VARCHAR(50) NOT NULL,
+    
+    -- Parâmetros específicos de cada tipo de regra
+    dias_semana INTEGER[] DEFAULT '{}', -- [1..7] onde 1=Dom, 2=Seg, 3=Ter, 4=Qua, 5=Qui, 6=Sex, 7=Sáb
+    turno INTEGER NOT NULL DEFAULT 4,   -- 1=Manhã, 2=Tarde, 3=Noite, 4=Integral
+    paridade VARCHAR(10),               -- 'par' ou 'impar'
+    dia_inicio_mes INTEGER,             -- Ex: 1
+    dia_fim_mes INTEGER,                -- Ex: 15
+    semanas_mes INTEGER[] DEFAULT '{}', -- Ex: [1, 3] para 1ª e 3ª semana
+    dias_mes INTEGER[] DEFAULT '{}',    -- Ex: [5, 20]
+    
+    -- Para regras de plantão cíclico (ex: trabalha 1 folga 1, ou plantão 12x36)
+    data_base_plantao DATE,
+    dias_trabalho INTEGER DEFAULT 1,
+    dias_folga INTEGER DEFAULT 1,
+    
+    -- Vigência da Regra
+    data_inicio DATE NOT NULL,
+    data_fim DATE,                      -- NULL indica vigência indeterminada
+    
+    -- Estado e Metadados
+    ativo BOOLEAN DEFAULT TRUE,
+    motivo TEXT,
+    criado_em TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    atualizado_em TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
 
-DROP POLICY IF EXISTS "Permitir leitura de usuarios para autenticados" ON public.usuarios;
-CREATE POLICY "Permitir leitura de usuarios para autenticados" 
-ON public.usuarios 
-FOR SELECT 
-TO authenticated 
-USING (true);
-
-DROP POLICY IF EXISTS "Permitir atualizacao do proprio perfil" ON public.usuarios;
-CREATE POLICY "Permitir atualizacao do proprio perfil" 
-ON public.usuarios 
-FOR UPDATE 
-TO authenticated 
-USING (auth.uid() = user_id);
+-- Índices para otimização de busca
+CREATE INDEX IF NOT EXISTS idx_padroes_bloqueio_obreiro ON public.padroes_bloqueio(id_obreiro);
+CREATE INDEX IF NOT EXISTS idx_padroes_bloqueio_ativo ON public.padroes_bloqueio(ativo);
+CREATE INDEX IF NOT EXISTS idx_padroes_bloqueio_vigencia ON public.padroes_bloqueio(data_inicio, data_fim);

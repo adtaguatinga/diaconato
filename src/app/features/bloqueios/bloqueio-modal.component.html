@@ -143,7 +143,7 @@
 
             <!-- MODE 4: Dia da Semana no Mês -->
             @if (mode === 'dia_semana') {
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="space-y-3.5">
                 <div>
                   <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
                     Mês de Referência *
@@ -156,17 +156,37 @@
                     }
                   </select>
                 </div>
-                <div>
-                  <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                    Dia da Semana *
-                  </label>
-                  <select 
-                    formControlName="dia_semana"
-                    class="w-full px-3.5 py-2.5 bg-slate-900/90 border border-slate-700/70 rounded-xl text-slate-100 focus:outline-none focus:border-indigo-500 text-sm transition-all">
-                    @for (d of diasSemanaList; track d.value) {
-                      <option [value]="d.value">{{ d.name }}s do mês</option>
+
+                <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3 space-y-2">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-300">Selecione os dias da semana:</span>
+                    <div class="flex items-center gap-1 text-[10px]">
+                      <button type="button" (click)="selecionarAtalhoDias('domingos')"
+                        class="text-indigo-400 hover:underline">Dom</button>
+                      <span class="text-slate-600">•</span>
+                      <button type="button" (click)="selecionarAtalhoDias('fim_semana')"
+                        class="text-indigo-400 hover:underline">Fim de Semana</button>
+                      <span class="text-slate-600">•</span>
+                      <button type="button" (click)="selecionarAtalhoDias('uteis')"
+                        class="text-indigo-400 hover:underline">Seg-Sex</button>
+                      <span class="text-slate-600">•</span>
+                      <button type="button" (click)="selecionarAtalhoDias('todos')"
+                        class="text-indigo-400 hover:underline">Todos</button>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-7 gap-1 sm:gap-1.5">
+                    @for (d of DIAS_SEMANA_OPCOES; track d.valor) {
+                    @let isDiaSel = diasSemanaSelecionados.has(d.valor);
+                    <button type="button" (click)="toggleDiaSemana(d.valor)"
+                      [class]="isDiaSel ? 'bg-indigo-600 border-indigo-500 text-white font-bold shadow-sm shadow-indigo-600/40' : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'"
+                      class="py-2.5 rounded-lg border text-center text-xs transition-all flex flex-col items-center select-none">
+                      <span class="text-[11px] font-bold">{{ d.abrev }}</span>
+                    </button>
                     }
-                  </select>
+                  </div>
+                  @if (diasSemanaSelecionados.size === 0) {
+                    <p class="text-[10px] text-slate-400 pt-0.5">Clique nos dias desejados (ou atalhos acima) para calcular os bloqueios do mês.</p>
+                  }
                 </div>
               </div>
             }
@@ -248,7 +268,11 @@
               <div class="p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-xl space-y-1 text-xs">
                 <div class="flex items-center justify-between text-indigo-300 font-bold">
                   <span>📊 Total a gerar:</span>
-                  <span>{{ calculatedDates.length }} data(s) × {{ getSelectedTurnosCount() }} turno(s) = {{ calculatedDates.length * getSelectedTurnosCount() }} bloqueio(s)</span>
+                  @if (isTodosTurnosSelecionados()) {
+                    <span>{{ calculatedDates.length }} data(s) × Dia Inteiro = {{ calculatedDates.length }} bloqueio(s)</span>
+                  } @else {
+                    <span>{{ calculatedDates.length }} data(s) × {{ getSelectedTurnosCount() }} turno(s) = {{ calculatedDates.length * getSelectedTurnosCount() }} bloqueio(s)</span>
+                  }
                 </div>
                 <div class="text-[11px] text-slate-400 truncate">
                   Datas: {{ getDatesPreview() }}

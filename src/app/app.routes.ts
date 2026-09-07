@@ -67,6 +67,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/tipos-evento/tipos-evento-list.component').then(m => m.TiposEventoListComponent)
   },
   {
+    path: 'bloqueios/padroes',
+    canActivate: [authGuard, roleGuard(['admin'])],
+    loadComponent: () => import('./features/bloqueios/padroes-bloqueio-list.component').then(m => m.PadroesBloqueioListComponent)
+  },
+  {
     path: 'bloqueios',
     canActivate: [authGuard, roleGuard(['admin', 'manager', 'operator'])],
     loadComponent: () => import('./features/bloqueios/bloqueios-list.component').then(m => m.BloqueiosListComponent)

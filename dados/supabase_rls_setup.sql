@@ -14,6 +14,7 @@ ALTER TABLE public.locais ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.evento_area_horarios ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.escala ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.usuarios ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.padroes_bloqueio ENABLE ROW LEVEL SECURITY;
 
 -- 2. Limpar políticas antigas (se houver) para evitar duplicações
 DROP POLICY IF EXISTS "Acesso autenticado obreiros" ON public.obreiros;
@@ -28,6 +29,8 @@ DROP POLICY IF EXISTS "Acesso autenticado escala" ON public.escala;
 DROP POLICY IF EXISTS "Permitir leitura de usuarios para autenticados" ON public.usuarios;
 DROP POLICY IF EXISTS "Permitir insercao de usuarios para autenticados" ON public.usuarios;
 DROP POLICY IF EXISTS "Permitir atualizacao do proprio perfil" ON public.usuarios;
+DROP POLICY IF EXISTS "Acesso autenticado padroes de bloqueio" ON public.padroes_bloqueio;
+
 
 -- 3. Criar Políticas de Acesso Restrito a Usuários Autenticados (Login obrigatório)
 CREATE POLICY "Acesso autenticado obreiros" 
@@ -98,6 +101,28 @@ CREATE POLICY "Permitir atualizacao do proprio perfil"
 ON public.usuarios FOR UPDATE 
 TO authenticated 
 USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Permitir leitura de usuarios para autenticados" ON public.usuarios;
+CREATE POLICY "Permitir leitura de usuarios para autenticados" 
+ON public.usuarios 
+FOR SELECT 
+TO authenticated 
+USING (true);
+
+DROP POLICY IF EXISTS "Permitir atualizacao do proprio perfil" ON public.usuarios;
+CREATE POLICY "Permitir atualizacao do proprio perfil" 
+ON public.usuarios 
+FOR UPDATE 
+TO authenticated 
+USING (auth.uid() = user_id);
+
+
+CREATE POLICY "Acesso autenticado padroes de bloqueio"
+ON public.padroes_bloqueio FOR ALL
+TO authenticated
+USING (true)
+WITH CHECK(true);
+
 
 ALTER TABLE public.obreiros ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Permitir leitura de obreiros para todos" ON public.obreiros;

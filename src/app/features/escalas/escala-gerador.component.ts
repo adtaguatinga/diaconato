@@ -103,23 +103,29 @@ export class EscalaGeradorComponent implements OnInit {
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   }
 
-  getMediaEscalas(): string {
+  private getObreirosParticipantes(): any[] {
     const res = this.result();
-    if (!res || !res.obreiroStats || res.obreiroStats.length === 0) return '0';
-    const total = res.obreiroStats.reduce((acc, s) => acc + s.totalEscalas, 0);
-    return (total / res.obreiroStats.length).toFixed(1);
+    if (!res || !res.obreiroStats) return [];
+    return res.obreiroStats.filter(s => s.totalEscalas > 0);
+  }
+
+  getMediaEscalas(): string {
+    const participantes = this.getObreirosParticipantes();
+    if (participantes.length === 0) return '0';
+    const total = participantes.reduce((acc, s) => acc + s.totalEscalas, 0);
+    return (total / participantes.length).toFixed(1);
   }
 
   getMinEscalas(): number {
-    const res = this.result();
-    if (!res || !res.obreiroStats || res.obreiroStats.length === 0) return 0;
-    return Math.min(...res.obreiroStats.map(s => s.totalEscalas));
+    const participantes = this.getObreirosParticipantes();
+    if (participantes.length === 0) return 0;
+    return Math.min(...participantes.map(s => s.totalEscalas));
   }
 
   getMaxEscalas(): number {
-    const res = this.result();
-    if (!res || !res.obreiroStats || res.obreiroStats.length === 0) return 0;
-    return Math.max(...res.obreiroStats.map(s => s.totalEscalas));
+    const participantes = this.getObreirosParticipantes();
+    if (participantes.length === 0) return 0;
+    return Math.max(...participantes.map(s => s.totalEscalas));
   }
 
   async executarGeracaoAutomatica() {
