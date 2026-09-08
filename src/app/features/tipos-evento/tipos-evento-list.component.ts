@@ -5,6 +5,7 @@ import { TipoEvento, CreateTipoEventoDto, DIAS_SEMANA_LABELS } from '../../core/
 import { TURNO_LABELS, TURNO_COLORS } from '../../core/models/turno.enum';
 import { TipoEventoModalComponent } from './tipo-evento-modal.component';
 import { ConfirmModalComponent } from '../../shared/components/confirm-modal.component';
+import { AreaService } from '../../core/services/area.service';
 
 @Component({
   selector: 'app-tipos-evento-list',
@@ -14,6 +15,7 @@ import { ConfirmModalComponent } from '../../shared/components/confirm-modal.com
 })
 export class TiposEventoListComponent implements OnInit {
   tipoEventoService = inject(TipoEventoService);
+  areaService = inject(AreaService);
   tiposEvento = this.tipoEventoService.tiposEvento;
 
   isModalOpen = false;
@@ -22,6 +24,7 @@ export class TiposEventoListComponent implements OnInit {
 
   ngOnInit() {
     this.tipoEventoService.fetchAll();
+    this.areaService.fetchAreas();
   }
 
   getTurnoLabel(turno: number): string {
@@ -38,6 +41,12 @@ export class TiposEventoListComponent implements OnInit {
 
   getTotalVagasPadrao(item: TipoEvento): number {
     return (item.n_primeiro_horario_padrao || 0) + (item.n_segundo_horario_padrao || 0) + (item.n_terceiro_horario_padrao || 0);
+  }
+
+  getAreasDoModelo(item: TipoEvento) {
+    const ids = item.areas_ids || [];
+    if (ids.length === 0) return [];
+    return this.areaService.areas().filter(a => ids.includes(a.id_area));
   }
 
   openCreateModal() {

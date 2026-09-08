@@ -298,4 +298,27 @@ export class EventoOperacaoService {
       return false;
     }
   }
+
+  async updateAreasVinculadas(idEvento: number, areasIds: number[]): Promise<boolean> {
+    try {
+      const { data, error } = await this.supabase
+        .from('eventos')
+        .update({
+          areas_ids: areasIds
+        })
+        .eq('id_evento', idEvento)
+        .select('*, mes(*)')
+        .single();
+
+      if (error) throw error;
+
+      this.evento.set(data as Evento);
+      this.toast.success('Setores Atualizados', 'Áreas vinculadas ao culto salvas com sucesso.');
+      return true;
+    } catch (err: any) {
+      console.error('Erro ao atualizar áreas vinculadas:', err);
+      this.toast.error('Erro', 'Falha ao atualizar setores do culto.');
+      return false;
+    }
+  }
 }

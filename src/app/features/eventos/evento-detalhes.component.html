@@ -55,6 +55,13 @@
 
     <!-- Quick Navigation Link, WhatsApp Share & Reload -->
     <div class="flex items-center gap-2 self-start sm:self-center flex-wrap">
+      <!-- Botão Configurar Áreas/Setores -->
+      <button type="button" (click)="openAreasConfigModal()"
+        class="px-3 py-1.5 rounded-xl border border-slate-700/80 bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 active:scale-95"
+        title="Configurar Setores / Áreas vinculadas a este culto">
+        <span>📍 Setores ({{ areasEvento().length }})</span>
+      </button>
+
       <!-- Botão Mapa -->
       <button type="button" (click)="openMapaTatico()"
         class="px-4 py-2.5 rounded-xl border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 hover:text-white text-xs font-bold transition-all shadow-sm flex items-center gap-2 active:scale-95">
@@ -1287,5 +1294,77 @@
     [defaultHorario]="mapaDefaultHorario()"
     (close)="isMapaTaticoOpen.set(false)"
   />
+
+  <!-- Modal de Configuração de Setores / Áreas Vinculadas ao Culto -->
+  @if (isAreasConfigModalOpen()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fade-in">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity" (click)="isAreasConfigModalOpen.set(false)"></div>
+
+    <!-- Modal Box -->
+    <div class="relative w-full max-w-lg bg-slate-900 border border-slate-700/80 rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 overflow-hidden z-10 space-y-4">
+      <!-- Header -->
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center text-lg">
+            📍
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-white">Setores / Áreas de Atuação</h3>
+            <p class="text-xs text-slate-400">Escolha quais setores estarão ativos neste culto</p>
+          </div>
+        </div>
+
+        <button type="button" (click)="isAreasConfigModalOpen.set(false)"
+          class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors">
+          ✕
+        </button>
+      </div>
+
+      <!-- Áreas Checkboxes -->
+      <div class="space-y-2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[50vh] overflow-y-auto p-1">
+          @for (area of areaService.areas(); track area.id_area) {
+            @if (area.ativo !== false) {
+              <button 
+                type="button"
+                (click)="toggleAreaTemp(area.id_area)"
+                [class]="isAreaSelectedTemp(area.id_area) 
+                  ? 'border-indigo-500/80 bg-indigo-500/15 text-indigo-200 ring-1 ring-indigo-500/30' 
+                  : 'border-slate-800 bg-slate-950/60 text-slate-400 opacity-60 hover:opacity-100'"
+                class="p-3 rounded-xl border text-xs font-bold flex items-center justify-between gap-2 transition-all text-left">
+                <div class="flex items-center gap-2 truncate">
+                  <span class="text-base">{{ area.icone || '📍' }}</span>
+                  <span class="truncate">{{ area.nome }}</span>
+                </div>
+                <div 
+                  [class]="isAreaSelectedTemp(area.id_area) ? 'bg-indigo-600 border-indigo-500' : 'bg-slate-900 border-slate-700'"
+                  class="w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors">
+                  @if (isAreaSelectedTemp(area.id_area)) {
+                    <svg class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                    </svg>
+                  }
+                </div>
+              </button>
+            }
+          }
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-800">
+        <button type="button" (click)="isAreasConfigModalOpen.set(false)"
+          class="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition-all">
+          Cancelar
+        </button>
+        <button type="button" (click)="saveAreasVinculadas()"
+          class="px-5 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2">
+          Salvar Setores
+        </button>
+      </div>
+    </div>
+  </div>
+  }
 
 </div>

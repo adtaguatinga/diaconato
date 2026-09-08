@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS public.tipo_evento (
     pulpito_primeiro BOOLEAN DEFAULT TRUE,
     pulpito_segundo BOOLEAN DEFAULT TRUE,
     pulpito_terceiro BOOLEAN DEFAULT TRUE,
+    areas_ids INTEGER[] DEFAULT '{}',
     criado_em TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -91,6 +92,7 @@ CREATE TABLE IF NOT EXISTS public.eventos (
     camisa_cor VARCHAR(50),
     cracha_obrigatorio BOOLEAN DEFAULT TRUE,
     lideres_responsaveis_ids INTEGER[] DEFAULT '{}',
+    areas_ids INTEGER[] DEFAULT '{}',
     criado_em TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 

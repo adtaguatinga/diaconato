@@ -5,6 +5,7 @@ import { Evento, CreateEventoDto } from '../../core/models/evento.model';
 import { Mes, formatMesReferencia } from '../../core/models/mes.model';
 import { TipoEventoService } from '../../core/services/tipo-evento.service';
 import { MesService } from '../../core/services/mes.service';
+import { AreaService } from '../../core/services/area.service';
 import { TurnoEnum, TURNO_LABELS } from '../../core/models/turno.enum';
 
 @Component({
@@ -23,6 +24,7 @@ export class EventoModalComponent implements OnInit {
 
   tipoEventoService = inject(TipoEventoService);
   mesService = inject(MesService);
+  areaService = inject(AreaService);
 
   formatMesReferencia = formatMesReferencia;
   TurnoEnum = TurnoEnum;
@@ -34,6 +36,7 @@ export class EventoModalComponent implements OnInit {
   ngOnInit() {
     this.tipoEventoService.fetchAll();
     this.mesService.fetchAll();
+    this.areaService.fetchAreas();
     this.initForm();
   }
 
@@ -63,6 +66,9 @@ export class EventoModalComponent implements OnInit {
   private initForm() {
     const initialMesId = this.evento?.id_mes || this.defaultMesId || this.mesService.meses()[0]?.id_mes || null;
     const defaultDate = this.evento?.data || this.getDefaultDateForMes(initialMesId);
+    const initialAreas = this.evento?.areas_ids 
+      ? [...this.evento.areas_ids] 
+      : this.areaService.areas().filter(a => a.ativo).map(a => a.id_area);
 
     this.form = this.fb.group({
       id_mes: [initialMesId, [Validators.required]],
@@ -77,8 +83,25 @@ export class EventoModalComponent implements OnInit {
       pulpito_segundo: [this.evento?.pulpito_segundo ?? true],
       n_terceiro_horario: [this.evento?.n_terceiro_horario ?? 0, [Validators.min(0)]],
       exclusivo_diacono_terceiro: [this.evento?.exclusivo_diacono_terceiro ?? false],
-      pulpito_terceiro: [this.evento?.pulpito_terceiro ?? true]
+      pulpito_terceiro: [this.evento?.pulpito_terceiro ?? true],
+      areas_ids: [initialAreas]
     });
+  }
+
+  isAreaSelected(idArea: number): boolean {
+    const list: number[] = this.form?.get('areas_ids')?.value || [];
+    return list.includes(idArea);
+  }
+
+  toggleArea(idArea: number) {
+    const current: number[] = [...(this.form?.get('areas_ids')?.value || [])];
+    const index = current.indexOf(idArea);
+    if (index > -1) {
+      current.splice(index, 1);
+    } else {
+      current.push(idArea);
+    }
+    this.form.patchValue({ areas_ids: current });
   }
 
   onMesChange(event: any) {
@@ -124,7 +147,10 @@ export class EventoModalComponent implements OnInit {
       pulpito_segundo: template.pulpito_segundo ?? true,
       n_terceiro_horario: template.n_terceiro_horario_padrao,
       exclusivo_diacono_terceiro: template.exclusivo_diacono_terceiro_padrao,
-      pulpito_terceiro: template.pulpito_terceiro ?? true
+      pulpito_terceiro: template.pulpito_terceiro ?? true,
+      areas_ids: template.areas_ids && template.areas_ids.length > 0
+        ? [...template.areas_ids]
+        : this.areaService.areas().filter(a => a.ativo).map(a => a.id_area)
     });
   }
 
@@ -137,7 +163,8 @@ export class EventoModalComponent implements OnInit {
         turno: Number(raw.turno),
         n_primeiro_horario: Number(raw.n_primeiro_horario || 0),
         n_segundo_horario: Number(raw.n_segundo_horario || 0),
-        n_terceiro_horario: Number(raw.n_terceiro_horario || 0)
+        n_terceiro_horario: Number(raw.n_terceiro_horario || 0),
+        areas_ids: raw.areas_ids || []
       });
     }
   }

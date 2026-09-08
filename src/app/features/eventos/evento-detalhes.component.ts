@@ -99,10 +99,49 @@ export class EventoDetalhesComponent implements OnInit {
   mapaDefaultAreaId = signal<number | null>(null);
   mapaDefaultHorario = signal<number | null>(null);
 
+  // Modal de Configuração de Setores / Áreas Vinculadas ao Culto
+  isAreasConfigModalOpen = signal<boolean>(false);
+  selectedAreasIdsTemp = signal<number[]>([]);
+
   openMapaTatico(defaultAreaId?: number | null, defaultHorario?: number | null) {
     this.mapaDefaultAreaId.set(defaultAreaId || null);
     this.mapaDefaultHorario.set(defaultHorario || null);
     this.isMapaTaticoOpen.set(true);
+  }
+
+  openAreasConfigModal() {
+    const ev = this.operacaoService.evento();
+    const current = ev?.areas_ids && ev.areas_ids.length > 0 
+      ? [...ev.areas_ids] 
+      : this.areaService.areas().filter(a => a.ativo).map(a => a.id_area);
+    this.selectedAreasIdsTemp.set(current);
+    this.isAreasConfigModalOpen.set(true);
+  }
+
+  isAreaSelectedTemp(idArea: number): boolean {
+    return this.selectedAreasIdsTemp().includes(idArea);
+  }
+
+  toggleAreaTemp(idArea: number) {
+    this.selectedAreasIdsTemp.update(current => {
+      const copy = [...current];
+      const idx = copy.indexOf(idArea);
+      if (idx > -1) {
+        copy.splice(idx, 1);
+      } else {
+        copy.push(idArea);
+      }
+      return copy;
+    });
+  }
+
+  async saveAreasVinculadas() {
+    const ev = this.operacaoService.evento();
+    if (!ev?.id_evento) return;
+    const success = await this.operacaoService.updateAreasVinculadas(ev.id_evento, this.selectedAreasIdsTemp());
+    if (success) {
+      this.isAreasConfigModalOpen.set(false);
+    }
   }
 
   // Constantes de Traje
@@ -189,11 +228,11 @@ export class EventoDetalhesComponent implements OnInit {
       .sort((a, b) => a.nome.localeCompare(b.nome));
   });
 
-  // Estatísticas de Alocação
+  // Estatísticas computadas
   totalEscalados = computed(() => this.operacaoService.escalas().length);
   totalAlocados = computed(() => this.operacaoService.escalas().filter(e => !!e.id_local).length);
-  totalPendentes = computed(() => this.totalEscalados() - this.totalAlocados());
-  percentualCobertura = computed(() => {
+  totalPendentes = computed(() => this.operacaoService.escalas().filter(e => !e.id_local).length);
+  percentualConcluido = computed(() => {
     const tot = this.totalEscalados();
     if (tot === 0) return 0;
     return Math.round((this.totalAlocados() / tot) * 100);
@@ -210,28 +249,15 @@ export class EventoDetalhesComponent implements OnInit {
     return turnos.length > 0 ? turnos : [{ id: 1, label: '1º Horário', maxVagas: 10 }];
   });
 
-  isEventoSantaCeia = computed<boolean>(() => {
-    const ev = this.operacaoService.evento();
-    if (!ev) return false;
-    const desc = (ev.descricao || '').toLowerCase();
-    return desc.includes('ceia');
-  });
-
-  // Áreas ativas e filtradas para o evento:
-  // - Se for "Santa Ceia": APENAS a área "Ceia" é apresentada.
-  // - Se NÃO for "Santa Ceia": todas as áreas ativas, EXCETO a área "Ceia", são apresentadas.
+  // Áreas ativas e vinculadas a este evento
   areasEvento = computed<Area[]>(() => {
-    const areas = this.areaService.areas().filter(a => a.ativo);
-    const isCeia = this.isEventoSantaCeia();
-    return areas.filter(a => {
-      const nomeArea = (a.nome || '').toLowerCase();
-      const isAreaCeia = nomeArea.includes('ceia');
-      if (isCeia) {
-        return isAreaCeia;
-      } else {
-        return !isAreaCeia;
-      }
-    });
+    const ev = this.operacaoService.evento();
+    const allActive = this.areaService.areas().filter(a => a.ativo);
+    if (!ev || !ev.areas_ids || ev.areas_ids.length === 0) {
+      return allActive;
+    }
+    const setIds = new Set(ev.areas_ids.map(Number));
+    return allActive.filter(a => a.id_area && setIds.has(Number(a.id_area)));
   });
 
   // Grupos de Escala organizados por Horário / Turno e agrupados por Setor
@@ -272,16 +298,14 @@ export class EventoDetalhesComponent implements OnInit {
         });
       }
 
-      // Caso haja algum com área não mapeada nas áreas cadastradas (apenas se NÃO for Santa Ceia)
-      if (!this.isEventoSantaCeia()) {
-        const mappedAreaIds = new Set(allAreas.map(a => a.id_area));
-        const outros = items.filter(e => !mappedAreaIds.has(Number(e.locais?.id_area)));
-        if (outros.length > 0) {
-          setoresMap.push({
-            area: { id_area: 0, nome: 'Outros Setores', icone: '📍', ativo: true },
-            escalas: outros
-          });
-        }
+      // Caso haja algum com área não mapeada nas áreas cadastradas
+      const mappedAreaIds = new Set(allAreas.map(a => a.id_area));
+      const outros = items.filter(e => !mappedAreaIds.has(Number(e.locais?.id_area)));
+      if (outros.length > 0) {
+        setoresMap.push({
+          area: { id_area: 0, nome: 'Outros Setores', icone: '📍', ativo: true },
+          escalas: outros
+        });
       }
 
       return {

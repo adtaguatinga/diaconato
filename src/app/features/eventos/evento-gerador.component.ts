@@ -175,7 +175,8 @@ export class EventoGeradorComponent implements OnInit {
             exclusivo_diacono_terceiro: !!modelo.exclusivo_diacono_terceiro_padrao,
             pulpito_primeiro: !!modelo.pulpito_primeiro,
             pulpito_segundo: !!modelo.pulpito_segundo,
-            pulpito_terceiro: !!modelo.pulpito_terceiro
+            pulpito_terceiro: !!modelo.pulpito_terceiro,
+            areas_ids: modelo.areas_ids || []
           });
         }
       }

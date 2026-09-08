@@ -25,6 +25,7 @@ export interface Evento {
   camisa_cor?: string | null;
   cracha_obrigatorio?: boolean;
   lideres_responsaveis_ids?: number[];
+  areas_ids?: number[];
   criado_em?: string;
   mes?: Mes;
 }

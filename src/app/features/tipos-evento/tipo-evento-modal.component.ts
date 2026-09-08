@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TipoEvento, CreateTipoEventoDto, DIAS_SEMANA_LABELS } from '../../core/models/tipo-evento.model';
 import { TurnoEnum, TURNO_LABELS } from '../../core/models/turno.enum';
+import { AreaService } from '../../core/services/area.service';
 
 @Component({
   selector: 'app-tipo-evento-modal',
@@ -17,6 +18,7 @@ export class TipoEventoModalComponent implements OnInit {
   @Output() save = new EventEmitter<CreateTipoEventoDto>();
   @Output() close = new EventEmitter<void>();
 
+  areaService = inject(AreaService);
   TurnoEnum = TurnoEnum;
   TURNO_LABELS = TURNO_LABELS;
 
@@ -29,6 +31,7 @@ export class TipoEventoModalComponent implements OnInit {
   form!: FormGroup;
 
   ngOnInit() {
+    this.areaService.fetchAreas();
     this.initForm();
   }
 
@@ -37,6 +40,10 @@ export class TipoEventoModalComponent implements OnInit {
   }
 
   private initForm() {
+    const initialAreas = this.tipoEvento?.areas_ids 
+      ? [...this.tipoEvento.areas_ids] 
+      : this.areaService.areas().filter(a => a.ativo).map(a => a.id_area);
+
     this.form = this.fb.group({
       descricao_padrao: [this.tipoEvento?.descricao_padrao || '', [Validators.required]],
       dia_semana_padrao: [this.tipoEvento?.dia_semana_padrao ?? null],
@@ -49,8 +56,25 @@ export class TipoEventoModalComponent implements OnInit {
       pulpito_segundo: [this.tipoEvento?.pulpito_segundo ?? true],
       n_terceiro_horario_padrao: [this.tipoEvento?.n_terceiro_horario_padrao ?? 0, [Validators.min(0)]],
       exclusivo_diacono_terceiro_padrao: [this.tipoEvento?.exclusivo_diacono_terceiro_padrao ?? false],
-      pulpito_terceiro: [this.tipoEvento?.pulpito_terceiro ?? true]
+      pulpito_terceiro: [this.tipoEvento?.pulpito_terceiro ?? true],
+      areas_ids: [initialAreas]
     });
+  }
+
+  isAreaSelected(idArea: number): boolean {
+    const list: number[] = this.form?.get('areas_ids')?.value || [];
+    return list.includes(idArea);
+  }
+
+  toggleArea(idArea: number) {
+    const current: number[] = [...(this.form?.get('areas_ids')?.value || [])];
+    const index = current.indexOf(idArea);
+    if (index > -1) {
+      current.splice(index, 1);
+    } else {
+      current.push(idArea);
+    }
+    this.form.patchValue({ areas_ids: current });
   }
 
   onSubmit() {
@@ -62,7 +86,8 @@ export class TipoEventoModalComponent implements OnInit {
         turno_padrao: Number(raw.turno_padrao),
         n_primeiro_horario_padrao: Number(raw.n_primeiro_horario_padrao || 0),
         n_segundo_horario_padrao: Number(raw.n_segundo_horario_padrao || 0),
-        n_terceiro_horario_padrao: Number(raw.n_terceiro_horario_padrao || 0)
+        n_terceiro_horario_padrao: Number(raw.n_terceiro_horario_padrao || 0),
+        areas_ids: raw.areas_ids || []
       });
     }
   }

@@ -66,6 +66,19 @@
                     }
                   </div>
                   <h3 class="text-base font-bold text-white">{{ item.descricao_padrao }}</h3>
+
+                  <!-- Áreas vinculadas -->
+                  <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
+                    @for (area of getAreasDoModelo(item); track area.id_area) {
+                      <span class="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-900 border border-slate-700/80 text-slate-300 flex items-center gap-1">
+                        <span>{{ area.icone || '📍' }}</span>
+                        <span>{{ area.nome }}</span>
+                      </span>
+                    }
+                    @if (getAreasDoModelo(item).length === 0) {
+                      <span class="text-[10px] text-slate-500 italic">Todas as áreas ativas</span>
+                    }
+                  </div>
                 </div>
 
                 <span class="text-xs font-extrabold text-indigo-400">

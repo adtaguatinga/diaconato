@@ -12,6 +12,7 @@ export interface TipoEvento {
   pulpito_primeiro: boolean;
   pulpito_segundo: boolean;
   pulpito_terceiro: boolean;
+  areas_ids?: number[];
   criado_em?: string;
 }
 
