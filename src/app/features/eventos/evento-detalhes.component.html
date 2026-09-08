@@ -608,8 +608,12 @@
                 <div class="flex items-start justify-between gap-2 border-b border-slate-800/70 pb-2.5 sm:pb-2">
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-1.5 flex-wrap">
-                      <span class="text-sm sm:text-xs font-bold text-white leading-tight break-words">{{ local.nome
-                        }}</span>
+                      <span class="text-sm sm:text-xs font-bold text-white leading-tight break-words">{{ local.nome }}</span>
+                      @if (!local.ativo) {
+                        <span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 font-bold border border-amber-500/30 shrink-0" title="Este posto está inativo no cadastro geral, mas possui obreiro vinculado neste culto">
+                          Inativo
+                        </span>
+                      }
                       @if (getEscalasDoLocalNoTurno(local.id_local, group.id).length > 0) {
                       <span
                         class="text-[10px] sm:text-[9px] px-2 sm:px-1.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30 shrink-0">

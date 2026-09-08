@@ -446,14 +446,20 @@ export class EventoMapaModalComponent {
     const horario = this.selectedHorario();
     if (!areaId) return [];
 
-    const locaisDaArea = (this.locais() || [])
-      .filter(l => l.id_area === areaId && l.ativo !== false)
-      .sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0) || a.nome.localeCompare(b.nome));
-
     const escalasDoHorario = (this.escalas() || []).filter(e => {
       const h = Number(e.horario_turno ?? 1);
       return h === horario && !!e.id_local;
     });
+
+    const locaisAlocadosIds = new Set(
+      (this.escalas() || [])
+        .map(e => e.id_local)
+        .filter((id): id is number => typeof id === 'number' && id > 0)
+    );
+
+    const locaisDaArea = (this.locais() || [])
+      .filter(l => l.id_area === areaId && (l.ativo !== false || locaisAlocadosIds.has(l.id_local)))
+      .sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0) || a.nome.localeCompare(b.nome));
 
     const baseList = locaisDaArea.map((loc, idx) => {
       const escalasDoLocal = escalasDoHorario.filter(e => e.id_local === loc.id_local);

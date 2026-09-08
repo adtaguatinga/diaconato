@@ -1082,7 +1082,15 @@ export class EventoDetalhesComponent implements OnInit {
 
   getLocaisPorArea(idArea?: number): Local[] {
     const activeAreaIds = new Set(this.areasEvento().map(a => a.id_area));
-    const list = this.localService.locais().filter(l => l.ativo && activeAreaIds.has(l.id_area));
+    const alocadosLocalIds = new Set(
+      this.operacaoService.escalas()
+        .map(e => e.id_local)
+        .filter((id): id is number => typeof id === 'number' && id > 0)
+    );
+
+    const list = this.localService.locais().filter(l => 
+      activeAreaIds.has(l.id_area) && (l.ativo !== false || alocadosLocalIds.has(l.id_local))
+    );
     const filtered = idArea ? list.filter(l => l.id_area === idArea) : list;
     return filtered.sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0) || a.nome.localeCompare(b.nome));
   }

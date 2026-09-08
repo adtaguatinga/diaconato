@@ -18,31 +18,53 @@ export class NavbarComponent {
   private elementRef = inject(ElementRef);
 
   isProfileMenuOpen = signal<boolean>(false);
+  isConfigMenuOpen = signal<boolean>(false);
 
   isPortalRoute = computed(() => {
     const url = this.router.url;
     return url.startsWith('/portal') || (this.obreiroAuth.isAuthenticated() && !this.authService.isAuthenticated());
   });
 
+  isConfigRoute = computed(() => {
+    const url = this.router.url;
+    return url.startsWith('/tipos-evento') || 
+           url.startsWith('/locais') || 
+           url.startsWith('/bloqueios/padroes') || 
+           url.startsWith('/meses');
+  });
+
   toggleProfileMenu(event?: Event) {
     if (event) event.stopPropagation();
     this.isProfileMenuOpen.update(v => !v);
+    this.isConfigMenuOpen.set(false);
   }
 
   closeProfileMenu() {
     this.isProfileMenuOpen.set(false);
   }
 
+  toggleConfigMenu(event?: Event) {
+    if (event) event.stopPropagation();
+    this.isConfigMenuOpen.update(v => !v);
+    this.isProfileMenuOpen.set(false);
+  }
+
+  closeConfigMenu() {
+    this.isConfigMenuOpen.set(false);
+  }
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.closeProfileMenu();
+      this.closeConfigMenu();
     }
   }
 
   @HostListener('document:keydown.escape')
   onEscape() {
     this.closeProfileMenu();
+    this.closeConfigMenu();
   }
 
   getUserInitial(): string {
