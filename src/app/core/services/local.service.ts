@@ -44,19 +44,61 @@ export class LocalService {
   async createLocal(dto: CreateLocalDto): Promise<Local | null> {
     this.loading.set(true);
     try {
-      const { data, error } = await this.supabase
-        .from('locais')
-        .insert([{
-          id_area: dto.id_area,
-          nome: dto.nome.trim(),
-          descricao: dto.descricao?.trim() || null,
-          ordem: dto.ordem ?? 0,
-          ativo: dto.ativo ?? true
-        }])
-        .select('*, areas(*)')
-        .single();
+      const payload: any = {
+        id_area: dto.id_area,
+        nome: dto.nome.trim(),
+        descricao: dto.descricao?.trim() || null,
+        ordem: dto.ordem ?? 0,
+        ativo: dto.ativo ?? true
+      };
+      if (dto.posicao_x !== undefined) payload.posicao_x = dto.posicao_x;
+      if (dto.posicao_y !== undefined) payload.posicao_y = dto.posicao_y;
+      if (dto.numero_posto !== undefined) payload.numero_posto = dto.numero_posto;
+      if (dto.cor_pino !== undefined) payload.cor_pino = dto.cor_pino;
+      if (dto.icone_pino !== undefined) payload.icone_pino = dto.icone_pino;
 
-      if (error) throw error;
+      let data: any = null;
+      let error: any = null;
+
+      try {
+        const res = await this.supabase
+          .from('locais')
+          .insert([payload])
+          .select('*, areas(*)')
+          .single();
+        data = res.data;
+        error = res.error;
+      } catch (e: any) {
+        error = e;
+      }
+
+      // Fallback caso colunas de posição não existam no Supabase
+      if (error && (payload.posicao_x !== undefined || payload.numero_posto !== undefined)) {
+        const fallbackPayload = {
+          id_area: payload.id_area,
+          nome: payload.nome,
+          descricao: payload.descricao,
+          ordem: payload.ordem,
+          ativo: payload.ativo
+        };
+        const resFallback = await this.supabase
+          .from('locais')
+          .insert([fallbackPayload])
+          .select('*, areas(*)')
+          .single();
+        if (resFallback.error) throw resFallback.error;
+        data = {
+          ...resFallback.data,
+          posicao_x: payload.posicao_x,
+          posicao_y: payload.posicao_y,
+          numero_posto: payload.numero_posto,
+          cor_pino: payload.cor_pino,
+          icone_pino: payload.icone_pino
+        };
+        error = null;
+      } else if (error) {
+        throw error;
+      }
 
       const newLocal = data as Local;
       this.locais.update(prev => [...prev, newLocal]);
@@ -80,15 +122,56 @@ export class LocalService {
       if (dto.descricao !== undefined) payload.descricao = dto.descricao?.trim() || null;
       if (dto.ordem !== undefined) payload.ordem = dto.ordem;
       if (dto.ativo !== undefined) payload.ativo = dto.ativo;
+      if (dto.posicao_x !== undefined) payload.posicao_x = dto.posicao_x;
+      if (dto.posicao_y !== undefined) payload.posicao_y = dto.posicao_y;
+      if (dto.numero_posto !== undefined) payload.numero_posto = dto.numero_posto;
+      if (dto.cor_pino !== undefined) payload.cor_pino = dto.cor_pino;
+      if (dto.icone_pino !== undefined) payload.icone_pino = dto.icone_pino;
 
-      const { data, error } = await this.supabase
-        .from('locais')
-        .update(payload)
-        .eq('id_local', id)
-        .select('*, areas(*)')
-        .single();
+      let data: any = null;
+      let error: any = null;
 
-      if (error) throw error;
+      try {
+        const res = await this.supabase
+          .from('locais')
+          .update(payload)
+          .eq('id_local', id)
+          .select('*, areas(*)')
+          .single();
+        data = res.data;
+        error = res.error;
+      } catch (e: any) {
+        error = e;
+      }
+
+      // Fallback se colunas de posição não existirem no Supabase
+      if (error && (payload.posicao_x !== undefined || payload.numero_posto !== undefined)) {
+        const fallbackPayload = { ...payload };
+        delete fallbackPayload.posicao_x;
+        delete fallbackPayload.posicao_y;
+        delete fallbackPayload.numero_posto;
+        delete fallbackPayload.cor_pino;
+        delete fallbackPayload.icone_pino;
+
+        const resFallback = await this.supabase
+          .from('locais')
+          .update(fallbackPayload)
+          .eq('id_local', id)
+          .select('*, areas(*)')
+          .single();
+        if (resFallback.error) throw resFallback.error;
+        data = {
+          ...resFallback.data,
+          posicao_x: payload.posicao_x,
+          posicao_y: payload.posicao_y,
+          numero_posto: payload.numero_posto,
+          cor_pino: payload.cor_pino,
+          icone_pino: payload.icone_pino
+        };
+        error = null;
+      } else if (error) {
+        throw error;
+      }
 
       const updated = data as Local;
       this.locais.update(prev => prev.map(item => item.id_local === id ? updated : item));
@@ -98,6 +181,28 @@ export class LocalService {
       console.error('Erro ao atualizar local:', err);
       this.toast.error('Erro', err.message || 'Falha ao atualizar local.');
       return null;
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  async updateCoordenadasBatch(atualizacoes: { id_local: number; posicao_x?: number | null; posicao_y?: number | null; numero_posto?: number | null }[]): Promise<boolean> {
+    if (atualizacoes.length === 0) return true;
+    this.loading.set(true);
+    try {
+      for (const item of atualizacoes) {
+        await this.updateLocal(item.id_local, {
+          posicao_x: item.posicao_x,
+          posicao_y: item.posicao_y,
+          numero_posto: item.numero_posto
+        });
+      }
+      this.toast.success('Mapa Salvo', 'Posicionamento dos postos atualizado com sucesso!');
+      return true;
+    } catch (err: any) {
+      console.error('Erro ao atualizar coordenadas em lote:', err);
+      this.toast.error('Erro', 'Falha ao salvar posições dos postos no mapa.');
+      return false;
     } finally {
       this.loading.set(false);
     }

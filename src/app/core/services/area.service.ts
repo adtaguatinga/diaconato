@@ -42,18 +42,53 @@ export class AreaService {
   async createArea(dto: CreateAreaDto): Promise<Area | null> {
     this.loading.set(true);
     try {
-      const { data, error } = await this.supabase
-        .from('areas')
-        .insert([{
-          nome: dto.nome.trim(),
-          descricao: dto.descricao?.trim() || null,
-          icone: dto.icone || '📍',
-          ativo: dto.ativo ?? true
-        }])
-        .select()
-        .single();
+      const payload: any = {
+        nome: dto.nome.trim(),
+        descricao: dto.descricao?.trim() || null,
+        icone: dto.icone || '📍',
+        ativo: dto.ativo ?? true
+      };
+      if (dto.mapa_url !== undefined) payload.mapa_url = dto.mapa_url;
+      if (dto.mapa_nome !== undefined) payload.mapa_nome = dto.mapa_nome;
 
-      if (error) throw error;
+      let data: any = null;
+      let error: any = null;
+
+      try {
+        const res = await this.supabase
+          .from('areas')
+          .insert([payload])
+          .select()
+          .single();
+        data = res.data;
+        error = res.error;
+      } catch (e: any) {
+        error = e;
+      }
+
+      // Se falhar por colunas mapa_url/mapa_nome inexistentes, tenta salvar sem elas e manter localmente
+      if (error && (payload.mapa_url || payload.mapa_nome)) {
+        const fallbackPayload = {
+          nome: payload.nome,
+          descricao: payload.descricao,
+          icone: payload.icone,
+          ativo: payload.ativo
+        };
+        const resFallback = await this.supabase
+          .from('areas')
+          .insert([fallbackPayload])
+          .select()
+          .single();
+        if (resFallback.error) throw resFallback.error;
+        data = {
+          ...resFallback.data,
+          mapa_url: payload.mapa_url,
+          mapa_nome: payload.mapa_nome
+        };
+        error = null;
+      } else if (error) {
+        throw error;
+      }
 
       const newArea = data as Area;
       this.areas.update(prev => [...prev, newArea].sort((a, b) => a.id_area - b.id_area));
@@ -76,15 +111,48 @@ export class AreaService {
       if (dto.descricao !== undefined) payload.descricao = dto.descricao?.trim() || null;
       if (dto.icone !== undefined) payload.icone = dto.icone;
       if (dto.ativo !== undefined) payload.ativo = dto.ativo;
+      if (dto.mapa_url !== undefined) payload.mapa_url = dto.mapa_url;
+      if (dto.mapa_nome !== undefined) payload.mapa_nome = dto.mapa_nome;
 
-      const { data, error } = await this.supabase
-        .from('areas')
-        .update(payload)
-        .eq('id_area', id)
-        .select()
-        .single();
+      let data: any = null;
+      let error: any = null;
 
-      if (error) throw error;
+      try {
+        const res = await this.supabase
+          .from('areas')
+          .update(payload)
+          .eq('id_area', id)
+          .select()
+          .single();
+        data = res.data;
+        error = res.error;
+      } catch (e: any) {
+        error = e;
+      }
+
+      // Se falhar devido a coluna mapa_url inexistente no Supabase, tenta atualizar sem ela
+      if (error && (payload.mapa_url !== undefined || payload.mapa_nome !== undefined)) {
+        const fallbackPayload = { ...payload };
+        delete fallbackPayload.mapa_url;
+        delete fallbackPayload.mapa_nome;
+        
+        const resFallback = await this.supabase
+          .from('areas')
+          .update(fallbackPayload)
+          .eq('id_area', id)
+          .select()
+          .single();
+        
+        if (resFallback.error) throw resFallback.error;
+        data = {
+          ...resFallback.data,
+          mapa_url: payload.mapa_url,
+          mapa_nome: payload.mapa_nome
+        };
+        error = null;
+      } else if (error) {
+        throw error;
+      }
 
       const updated = data as Area;
       this.areas.update(prev => prev.map(item => item.id_area === id ? updated : item));

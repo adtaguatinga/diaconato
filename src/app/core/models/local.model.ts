@@ -7,6 +7,11 @@ export interface Local {
   descricao?: string | null;
   ordem: number;
   ativo: boolean;
+  posicao_x?: number | null; // Percentual de 0 a 100
+  posicao_y?: number | null; // Percentual de 0 a 100
+  numero_posto?: number | null;
+  cor_pino?: string | null;
+  icone_pino?: string | null;
   criado_em?: string;
   areas?: Area; // Relacionamento com tabela areas
 }
@@ -17,6 +22,11 @@ export interface CreateLocalDto {
   descricao?: string | null;
   ordem?: number;
   ativo?: boolean;
+  posicao_x?: number | null;
+  posicao_y?: number | null;
+  numero_posto?: number | null;
+  cor_pino?: string | null;
+  icone_pino?: string | null;
 }
 
 export interface UpdateLocalDto {
@@ -25,6 +35,11 @@ export interface UpdateLocalDto {
   descricao?: string | null;
   ordem?: number;
   ativo?: boolean;
+  posicao_x?: number | null;
+  posicao_y?: number | null;
+  numero_posto?: number | null;
+  cor_pino?: string | null;
+  icone_pino?: string | null;
 }
 
 export function getAreaStyle(areaNome?: string) {

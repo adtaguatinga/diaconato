@@ -7,6 +7,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { Local, CreateLocalDto, getAreaStyle } from '../../core/models/local.model';
 import { Area } from '../../core/models/area.model';
 import { LocalModalComponent } from './local-modal.component';
+import { AreaMapaModalComponent } from './area-mapa-modal.component';
 import { ConfirmModalComponent } from '../../shared/components/confirm-modal.component';
 
 export interface AreaGroup {
@@ -18,7 +19,7 @@ export interface AreaGroup {
 @Component({
   selector: 'app-locais-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, LocalModalComponent, ConfirmModalComponent],
+  imports: [CommonModule, FormsModule, LocalModalComponent, AreaMapaModalComponent, ConfirmModalComponent],
   templateUrl: './locais-list.component.html'
 })
 export class LocaisListComponent implements OnInit {
@@ -33,7 +34,9 @@ export class LocaisListComponent implements OnInit {
 
   isModalOpen = false;
   isConfirmOpen = false;
+  isMapaModalOpen = false;
   selectedLocal: Local | null = null;
+  selectedAreaForMapa: Area | null = null;
   defaultAreaId: number | null = null;
 
   // Estatísticas
@@ -136,5 +139,14 @@ export class LocaisListComponent implements OnInit {
 
   async toggleAtivo(local: Local) {
     await this.localService.toggleAtivo(local);
+  }
+
+  openMapaModal(area: Area) {
+    this.selectedAreaForMapa = area;
+    this.isMapaModalOpen = true;
+  }
+
+  getLocaisDaArea(idArea: number): Local[] {
+    return this.localService.locais().filter(l => l.id_area === idArea);
   }
 }

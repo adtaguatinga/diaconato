@@ -3,6 +3,8 @@ export interface Area {
   nome: string;
   descricao?: string | null;
   icone?: string | null;
+  mapa_url?: string | null;
+  mapa_nome?: string | null;
   ativo: boolean;
   criado_em?: string;
 }
@@ -11,6 +13,8 @@ export interface CreateAreaDto {
   nome: string;
   descricao?: string | null;
   icone?: string | null;
+  mapa_url?: string | null;
+  mapa_nome?: string | null;
   ativo?: boolean;
 }
 
@@ -18,6 +22,8 @@ export interface UpdateAreaDto {
   nome?: string;
   descricao?: string | null;
   icone?: string | null;
+  mapa_url?: string | null;
+  mapa_nome?: string | null;
   ativo?: boolean;
 }
 

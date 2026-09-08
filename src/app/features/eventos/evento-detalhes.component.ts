@@ -57,6 +57,8 @@ export interface ObreiroHistoricoAno {
   locaisMenosAtuadosIds: number[];
 }
 
+import { EventoMapaModalComponent } from './evento-mapa-modal.component';
+
 export interface ObreiroPostoCandidate {
   escala: Escala;
   nome: string;
@@ -76,7 +78,7 @@ export interface ObreiroPostoCandidate {
 @Component({
   selector: 'app-evento-detalhes',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, EventoMapaModalComponent],
   templateUrl: './evento-detalhes.component.html'
 })
 export class EventoDetalhesComponent implements OnInit {
@@ -93,6 +95,15 @@ export class EventoDetalhesComponent implements OnInit {
 
   idEvento = signal<number>(0);
   isShareModalOpen = signal<boolean>(false);
+  isMapaTaticoOpen = signal<boolean>(false);
+  mapaDefaultAreaId = signal<number | null>(null);
+  mapaDefaultHorario = signal<number | null>(null);
+
+  openMapaTatico(defaultAreaId?: number | null, defaultHorario?: number | null) {
+    this.mapaDefaultAreaId.set(defaultAreaId || null);
+    this.mapaDefaultHorario.set(defaultHorario || null);
+    this.isMapaTaticoOpen.set(true);
+  }
 
   // Constantes de Traje
   trajeOpcoes = TRAJE_OPCOES;

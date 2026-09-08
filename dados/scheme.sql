@@ -100,17 +100,24 @@ CREATE TABLE IF NOT EXISTS public.areas (
     nome VARCHAR(100) UNIQUE NOT NULL,
     descricao TEXT,
     icone VARCHAR(50) DEFAULT '📍',
+    mapa_url TEXT,
+    mapa_nome TEXT,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
     criado_em TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 7. Tabela de Locais de Atuação dos Obreiros
+-- 7. Tabela de Locais / Postos de Atuação dos Obreiros
 CREATE TABLE IF NOT EXISTS public.locais (
     id_local SERIAL PRIMARY KEY,
     id_area INTEGER NOT NULL REFERENCES public.areas(id_area) ON DELETE CASCADE,
     nome VARCHAR(150) NOT NULL,
     descricao TEXT,
     ordem INTEGER DEFAULT 0,
+    posicao_x NUMERIC,
+    posicao_y NUMERIC,
+    numero_posto INTEGER,
+    cor_pino VARCHAR(50),
+    icone_pino VARCHAR(50),
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
     criado_em TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
