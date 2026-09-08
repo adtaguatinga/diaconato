@@ -1,0 +1,16 @@
+import{Dn as mv,a as A,cn as gv,pr as yo,xt as W}from"./chunk-Ng6voisv.js";var f=class i{supabase=A(gv).client;toast=A(mv);eventos=yo([]);loading=yo(!1);async fetchAll(){this.loading.set(!0);try{let r=[],e=0,o=1e3,t=!0;for(;t;){let{data:s,error:a}=await this.supabase.from(`eventos`).select(`
+            *,
+            mes (*)
+          `).order(`data`,{ascending:!0}).order(`turno`,{ascending:!0}).range(e,e+o-1);if(a)throw a;s&&s.length>0?(r.push(...s),s.length<o?t=!1:e+=o):t=!1}return this.eventos.set(r),r}catch(r){return console.error(`Erro ao buscar eventos:`,r),this.toast.error(`Erro ao carregar eventos`,r.message),[]}finally{this.loading.set(!1)}}async fetchByMes(r){this.loading.set(!0);try{let{data:e,error:o}=await this.supabase.from(`eventos`).select(`
+          *,
+          mes (*)
+        `).eq(`id_mes`,r).order(`data`,{ascending:!0}).order(`turno`,{ascending:!0});if(o)throw o;let t=e||[];return this.eventos.set(t),t}catch(e){return console.error(`Erro ao buscar eventos por mês:`,e),this.toast.error(`Erro ao carregar eventos do mês`,e.message),[]}finally{this.loading.set(!1)}}async create(r){this.loading.set(!0);try{let{data:e,error:o}=await this.supabase.from(`eventos`).insert([r]).select(`
+          *,
+          mes (*)
+        `).single();if(o)throw o;let t=e;return this.eventos.update(s=>[...s,t].sort((a,n)=>{let u=(a.data||``).localeCompare(n.data||``);return u!==0?u:(a.turno||0)-(n.turno||0)})),this.toast.success(`Evento criado!`,`${t.descricao||`Novo culto/evento`} registrado com sucesso.`),t}catch(e){return console.error(`Erro ao criar evento:`,e),this.toast.error(`Falha ao cadastrar evento`,e.message),null}finally{this.loading.set(!1)}}async update(r,e){this.loading.set(!0);try{let{data:o,error:t}=await this.supabase.from(`eventos`).update(e).eq(`id_evento`,r).select(`
+          *,
+          mes (*)
+        `).single();if(t)throw t;let s=o;return this.eventos.update(a=>a.map(n=>n.id_evento===r?s:n)),this.toast.success(`Evento atualizado!`,`Dados do culto/evento salvos.`),s}catch(o){return console.error(`Erro ao atualizar evento:`,o),this.toast.error(`Falha ao atualizar evento`,o.message),null}finally{this.loading.set(!1)}}async saveGeneratedEvents(r,e,o=!0){this.loading.set(!0);try{if(o){let{error:t}=await this.supabase.from(`eventos`).delete().eq(`id_mes`,r);if(t)throw t}if(e.length>0){let{data:t,error:s}=await this.supabase.from(`eventos`).insert(e).select(`
+            *,
+            mes (*)
+          `);if(s)throw s}return await this.fetchByMes(r),this.toast.success(`Cultos e Eventos Gerados!`,`${e.length} cultos foram criados com sucesso para o m\xEAs.`),!0}catch(t){return console.error(`Erro ao salvar eventos gerados:`,t),this.toast.error(`Falha ao gerar eventos`,t.message),!1}finally{this.loading.set(!1)}}async delete(r){this.loading.set(!0);try{let{error:e}=await this.supabase.from(`eventos`).delete().eq(`id_evento`,r);if(e)throw e;return this.eventos.update(o=>o.filter(t=>t.id_evento!==r)),this.toast.success(`Evento removido`,`Culto/evento excluído com sucesso.`),!0}catch(e){return console.error(`Erro ao deletar evento:`,e),this.toast.error(`Falha ao excluir evento`,e.message),!1}finally{this.loading.set(!1)}}static ɵfac=function(e){return new(e||i)};static ɵprov=W({token:i,factory:i.ɵfac,providedIn:`root`})};export{f as t};
