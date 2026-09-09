@@ -1,12 +1,18 @@
 {
   "name": "diaconato-web",
-  "version": "1.0.0-beta1",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0",
+    "start:hml": "ng serve --host 0.0.0.0 --configuration staging",
+    "start:prod": "ng serve --host 0.0.0.0 --configuration production",
     "build": "ng build",
-    "build:gh-pages": "ng build --base-href /diaconato/ && node -e \"require('fs').copyFileSync('dist/diaconato-web/browser/index.html', 'dist/diaconato-web/browser/404.html')\"",
+    "build:hml": "ng build --configuration staging",
+    "build:prod": "ng build --configuration production",
+    "build:gh-pages": "ng build --configuration production --base-href /diaconato/ && node -e \"require('fs').copyFileSync('dist/diaconato-web/browser/index.html', 'dist/diaconato-web/browser/404.html')\"",
+    "build:gh-pages:hml": "ng build --configuration staging --base-href /diaconato-hml/ && node -e \"require('fs').copyFileSync('dist/diaconato-web/browser/index.html', 'dist/diaconato-web/browser/404.html')\"",
     "deploy": "npm run build:gh-pages && gh-pages -d dist/diaconato-web/browser",
+    "deploy:hml": "npm run build:gh-pages:hml && gh-pages -d dist/diaconato-web/browser -r https://github.com/silasmsales/diaconato-hml.git",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
