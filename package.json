@@ -12,7 +12,7 @@
     "build:gh-pages": "ng build --configuration production --base-href /diaconato/ && node -e \"require('fs').copyFileSync('dist/diaconato-web/browser/index.html', 'dist/diaconato-web/browser/404.html')\"",
     "build:gh-pages:hml": "ng build --configuration staging --base-href /diaconato-hml/ && node -e \"require('fs').copyFileSync('dist/diaconato-web/browser/index.html', 'dist/diaconato-web/browser/404.html')\"",
     "deploy": "npm run build:gh-pages && gh-pages -d dist/diaconato-web/browser",
-    "deploy:hml": "npm run build:gh-pages:hml && gh-pages -d dist/diaconato-web/browser -r https://github.com/silasmsales/diaconato-hml.git",
+    "deploy:hml": "npm run build:gh-pages:hml && gh-pages -d dist/diaconato-web/browser -r https://github.com/adtaguatinga/diaconato-hml.git",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
