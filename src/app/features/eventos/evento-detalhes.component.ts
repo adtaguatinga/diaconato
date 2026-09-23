@@ -1202,7 +1202,9 @@ export class EventoDetalhesComponent implements OnInit {
         }
 
         for (const [posto, obreiros] of postosMap.entries()) {
-          lines.push(`  ▫️ ${posto}: ${obreiros.join(', ')}`);
+          for (const obreiro of obreiros) {
+            lines.push(`  ▫️ ${posto}: ${obreiro}`);
+          }
         }
       }
     }
