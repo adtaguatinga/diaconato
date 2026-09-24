@@ -226,8 +226,8 @@ export class PadraoBloqueioModalComponent implements OnChanges {
     return this.obreiros
       .filter(o => o.ativo !== false)
       .sort((a, b) => {
-        const nomeA = a.apelido || a.nome;
-        const nomeB = b.apelido || b.nome;
+        const nomeA = a.nome || a.apelido || '';
+        const nomeB = b.nome || b.apelido || '';
         return nomeA.localeCompare(nomeB);
       });
   };
