@@ -10,7 +10,7 @@ export const routes: Routes = [
   {
     path: 'portal/login',
     canActivate: [obreiroGuestGuard],
-    loadComponent: () => import('./features/portal/portal-login.component').then(m => m.PortalLoginComponent)
+    loadComponent: () => import('./features/auth/unified-login.component').then(m => m.UnifiedLoginComponent)
   },
   {
     path: 'portal',
@@ -39,7 +39,7 @@ export const routes: Routes = [
   {
     path: 'login',
     canActivate: [guestGuard],
-    loadComponent: () => import('./features/auth/login.component').then(m => m.LoginComponent)
+    loadComponent: () => import('./features/auth/unified-login.component').then(m => m.UnifiedLoginComponent)
   },
   {
     path: '',

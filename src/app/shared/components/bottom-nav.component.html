@@ -1,6 +1,6 @@
 <!-- 1. BARRA INFERIOR MOBILE: PORTAL DO OBREIRO -->
 @if (isPortalRoute() && obreiroAuth.isAuthenticated()) {
-  <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-lg border-t border-slate-800/90 px-2 py-1.5 shadow-2xl">
+  <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-lg border-t border-slate-800/90 px-2 pt-1.5 pb-2 shadow-2xl safe-bottom" style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0.5rem));">
     <div class="grid grid-cols-4 gap-1 items-center max-w-md mx-auto">
       
       <!-- Início -->
@@ -46,7 +46,7 @@
 
 <!-- 2. BARRA INFERIOR MOBILE: GESTÃO ADMINISTRATIVA -->
 @else if (!isPortalRoute() && authService.isAuthenticated()) {
-  <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-lg border-t border-slate-800/90 px-2 py-1.5">
+  <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-lg border-t border-slate-800/90 px-2 pt-1.5 pb-2 shadow-2xl safe-bottom" style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0.5rem));">
     <div class="grid grid-cols-5 gap-1 items-center max-w-lg mx-auto">
       <!-- Início / Dashboard -->
       <a 

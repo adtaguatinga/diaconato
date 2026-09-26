@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { PwaService } from '../../core/services/pwa.service';
 
 @Component({
   selector: 'app-login',
@@ -12,6 +13,7 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class LoginComponent {
   authService = inject(AuthService);
+  pwaService = inject(PwaService);
   private fb = inject(FormBuilder);
 
   form: FormGroup = this.fb.group({

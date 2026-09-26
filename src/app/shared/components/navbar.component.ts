@@ -1,8 +1,11 @@
 import { Component, ElementRef, HostListener, inject, signal, computed } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { filter } from 'rxjs/operators';
 import { AuthService } from '../../core/services/auth.service';
 import { ObreiroAuthService } from '../../core/services/obreiro-auth.service';
+import { PwaService } from '../../core/services/pwa.service';
+import { ThemeService } from '../../core/services/theme.service';
 import { ROLE_LABELS, ROLE_BADGE_STYLES, UserRole } from '../../core/models/usuario.model';
 
 @Component({
@@ -14,24 +17,38 @@ import { ROLE_LABELS, ROLE_BADGE_STYLES, UserRole } from '../../core/models/usua
 export class NavbarComponent {
   authService = inject(AuthService);
   obreiroAuth = inject(ObreiroAuthService);
+  pwaService = inject(PwaService);
+  themeService = inject(ThemeService);
   private router = inject(Router);
   private elementRef = inject(ElementRef);
+
+  currentUrl = signal<string>(this.router.url);
 
   isProfileMenuOpen = signal<boolean>(false);
   isConfigMenuOpen = signal<boolean>(false);
 
   isPortalRoute = computed(() => {
-    const url = this.router.url;
+    const url = this.currentUrl();
     return url.startsWith('/portal') || (this.obreiroAuth.isAuthenticated() && !this.authService.isAuthenticated());
   });
 
   isConfigRoute = computed(() => {
-    const url = this.router.url;
+    const url = this.currentUrl();
     return url.startsWith('/tipos-evento') || 
            url.startsWith('/locais') || 
            url.startsWith('/bloqueios/padroes') || 
            url.startsWith('/meses');
   });
+
+  constructor() {
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd)
+    ).subscribe(e => {
+      this.currentUrl.set(e.urlAfterRedirects || e.url);
+      this.closeProfileMenu();
+      this.closeConfigMenu();
+    });
+  }
 
   toggleProfileMenu(event?: Event) {
     if (event) event.stopPropagation();
