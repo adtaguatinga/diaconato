@@ -1,6 +1,6 @@
 {
-  "name": "ADTAG Diaconato",
-  "short_name": "Diaconato",
+  "name": "Diaconato ADTAG",
+  "short_name": "Diaconato ADTAG",
   "description": "Sistema de Gestão de Diaconato e Escalas Ministeriais - ADTAG",
   "start_url": "./",
   "scope": "./",
