@@ -98,6 +98,19 @@
       </button>
     </form>
 
+    <!-- Instalação PWA se acessado via navegador -->
+    @if (pwaService.canInstall() || (pwaService.isIOS() && !pwaService.isStandalone())) {
+      <div class="pt-2">
+        <button 
+          type="button" 
+          (click)="pwaService.promptInstall()"
+          class="w-full py-2.5 px-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-indigo-300 hover:text-white border border-indigo-500/20 text-xs font-semibold transition-all flex items-center justify-center gap-2 shadow-sm">
+          <span>📲</span>
+          <span>Instalar Aplicativo no Celular</span>
+        </button>
+      </div>
+    }
+
     <!-- Rodapé & Alternador -->
     <div class="pt-3 border-t border-slate-800/80 space-y-2.5 text-center">
       <p class="text-xs text-slate-400">

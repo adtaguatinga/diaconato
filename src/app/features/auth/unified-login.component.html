@@ -1,0 +1,194 @@
+<div class="min-h-[82vh] flex items-center justify-center p-3 sm:p-4 animate-fade-in">
+  <div class="glass-panel border border-slate-700/60 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5">
+    
+    <!-- Logo & Header -->
+    <div class="text-center space-y-2">
+      <div class="relative inline-block">
+        <img 
+          src="logo_adtag.jpg" 
+          alt="ADTAG Logo" 
+          class="w-16 h-16 rounded-2xl mx-auto shadow-2xl border border-slate-700/80 object-cover" 
+        />
+        <span 
+          [class]="activeProfile() === 'diacono' ? 'bg-gradient-to-r from-purple-600 to-indigo-600' : 'bg-gradient-to-r from-indigo-600 to-amber-500'"
+          class="absolute -bottom-1.5 -right-1.5 px-2 py-0.5 rounded-full text-white text-[9px] font-extrabold uppercase shadow transition-all duration-300">
+          {{ activeProfile() === 'diacono' ? 'Diaconato' : 'Gestão' }}
+        </span>
+      </div>
+
+      <div>
+        <h1 class="text-2xl font-black text-white tracking-tight">
+          ADTAG Diaconato
+        </h1>
+        <p class="text-xs font-semibold text-indigo-400 mt-0.5">
+          Assembleia de Deus de Taguatinga
+        </p>
+      </div>
+    </div>
+
+    <!-- SELETOR DE PERFIL: DIÁCONO vs LIDERANÇA -->
+    <div class="space-y-1.5">
+      <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider text-center">
+        Selecione seu tipo de acesso
+      </label>
+      <div class="grid grid-cols-2 p-1 bg-slate-950/80 border border-slate-800 rounded-2xl gap-1">
+        <!-- Opção 1: Diácono (Padrão) -->
+        <button 
+          type="button" 
+          (click)="setProfile('diacono')"
+          [class]="activeProfile() === 'diacono' ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold shadow-md shadow-purple-600/30 ring-1 ring-purple-500/40' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 font-medium'"
+          class="py-2.5 px-3 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 select-none">
+          <span>👥</span>
+          <span>Diácono</span>
+        </button>
+
+        <!-- Opção 2: Liderança -->
+        <button 
+          type="button" 
+          (click)="setProfile('lideranca')"
+          [class]="activeProfile() === 'lideranca' ? 'bg-gradient-to-r from-indigo-600 to-amber-600 text-white font-bold shadow-md shadow-indigo-600/30 ring-1 ring-indigo-500/40' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 font-medium'"
+          class="py-2.5 px-3 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 select-none">
+          <span>🔐</span>
+          <span>Liderança</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- 👥 FORMULÁRIO 1: DIÁCONO / PORTAL DO OBREIRO (PADRÃO) -->
+    <!-- ==================================================== -->
+    @if (activeProfile() === 'diacono') {
+      <form [formGroup]="diaconoForm" (ngSubmit)="onDiaconoSubmit()" class="space-y-4 animate-fade-in">
+
+        <!-- E-mail -->
+        <div class="space-y-1.5">
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+            E-mail Cadastrado *
+          </label>
+          <input 
+            type="email" 
+            formControlName="email"
+            placeholder="ex: seuemail@dominio.com"
+            class="w-full px-3.5 py-3 bg-slate-900/90 border border-slate-700/70 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm transition-all shadow-inner min-h-[44px]"
+          />
+          @if (diaconoForm.get('email')?.touched && diaconoForm.get('email')?.hasError('required')) {
+            <span class="text-[11px] text-rose-400 flex items-center gap-1">Informe seu e-mail</span>
+          }
+          @if (diaconoForm.get('email')?.touched && diaconoForm.get('email')?.hasError('email')) {
+            <span class="text-[11px] text-rose-400 flex items-center gap-1">Insira um e-mail válido</span>
+          }
+        </div>
+
+        <!-- Data de Nascimento com Máscara e Teclado Numérico -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              Data de Nascimento *
+            </label>
+            <span class="text-[10px] text-indigo-400 font-semibold">DD/MM/AAAA</span>
+          </div>
+          
+          <input 
+            type="text" 
+            inputmode="numeric"
+            pattern="[0-9/]*"
+            maxlength="10"
+            formControlName="data_nascimento"
+            (input)="onDateInput($event)"
+            placeholder="01/01/1999"
+            class="w-full px-3.5 py-3 bg-slate-900/90 border border-slate-700/70 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm transition-all shadow-inner tracking-wider font-medium min-h-[44px]"
+          />
+
+          @if (diaconoForm.get('data_nascimento')?.touched && diaconoForm.get('data_nascimento')?.hasError('required')) {
+            <span class="text-[11px] text-rose-400 flex items-center gap-1">Informe sua data de nascimento</span>
+          }
+          @if (diaconoForm.get('data_nascimento')?.touched && diaconoForm.get('data_nascimento')?.hasError('pattern')) {
+            <span class="text-[11px] text-rose-400 flex items-center gap-1">Formato completo: DD/MM/AAAA</span>
+          }
+        </div>
+
+        <!-- Submit Button -->
+        <button 
+          type="submit" 
+          [disabled]="diaconoForm.invalid || obreiroAuth.loading()"
+          class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 mt-3 active:scale-95 min-h-[48px]">
+          @if (obreiroAuth.loading()) {
+            <span class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
+            <span>Verificando cadastro...</span>
+          } @else {
+            <span>Entrar no Portal do Diácono</span>
+            <span>➔</span>
+          }
+        </button>
+      </form>
+    }
+
+    <!-- ==================================================== -->
+    <!-- 🔐 FORMULÁRIO 2: LIDERANÇA / PORTAL ADMINISTRATIVO  -->
+    <!-- ==================================================== -->
+    @if (activeProfile() === 'lideranca') {
+      <form [formGroup]="liderancaForm" (ngSubmit)="onLiderancaSubmit()" class="space-y-4 animate-fade-in">
+
+        <!-- E-mail -->
+        <div class="space-y-1.5">
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+            E-mail Institucional *
+          </label>
+          <input 
+            type="email" 
+            formControlName="email"
+            placeholder="seuemail@igreja.com"
+            class="w-full px-3.5 py-3 bg-slate-900/90 border border-slate-700/70 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm transition-all shadow-inner min-h-[44px]"
+          />
+          @if (liderancaForm.get('email')?.touched && liderancaForm.get('email')?.hasError('email')) {
+            <span class="text-[11px] text-rose-400">Insira um e-mail válido</span>
+          }
+        </div>
+
+        <!-- Senha -->
+        <div class="space-y-1.5">
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+            Senha de Acesso *
+          </label>
+          <input 
+            type="password" 
+            formControlName="password"
+            placeholder="••••••••"
+            class="w-full px-3.5 py-3 bg-slate-900/90 border border-slate-700/70 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 text-sm transition-all shadow-inner min-h-[44px]"
+          />
+          @if (liderancaForm.get('password')?.touched && liderancaForm.get('password')?.hasError('minlength')) {
+            <span class="text-[11px] text-rose-400">Mínimo de 6 caracteres</span>
+          }
+        </div>
+
+        <!-- Submit Button -->
+        <button 
+          type="submit" 
+          [disabled]="liderancaForm.invalid || authService.loading()"
+          class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-amber-600 hover:from-indigo-500 hover:to-amber-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 mt-3 active:scale-95 min-h-[48px]">
+          @if (authService.loading()) {
+            <span class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
+            <span>Autenticando liderança...</span>
+          } @else {
+            <span>Acessar Portal Administrativo</span>
+            <span>➔</span>
+          }
+        </button>
+      </form>
+    }
+
+    <!-- Instalação PWA se acessado via navegador -->
+    @if (pwaService.canInstall() || (pwaService.isIOS() && !pwaService.isStandalone())) {
+      <div class="pt-2 border-t border-slate-800/70">
+        <button 
+          type="button" 
+          (click)="pwaService.promptInstall()"
+          class="w-full py-2.5 px-3 rounded-xl bg-slate-950/80 hover:bg-slate-900 text-indigo-300 hover:text-white border border-indigo-500/20 text-xs font-semibold transition-all flex items-center justify-center gap-2 shadow-sm">
+          <span>📲</span>
+          <span>Instalar Aplicativo Diaconato no Celular</span>
+        </button>
+      </div>
+    }
+
+  </div>
+</div>

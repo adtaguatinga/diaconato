@@ -43,3 +43,19 @@
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+/* PWA Mobile & Safe Area Enhancements */
+@supports (padding: env(safe-area-inset-top)) {
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Disable pull-to-refresh reload flicker on iOS standalone when navigating internally */
+html, body {
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+}
+

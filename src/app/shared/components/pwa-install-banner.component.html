@@ -1,0 +1,39 @@
+@if (shouldShow()) {
+  <div class="fixed bottom-3 sm:bottom-4 left-3 right-3 sm:left-auto sm:right-4 sm:max-w-sm z-50 animate-fade-in safe-bottom">
+    <div class="glass-panel bg-slate-900/95 backdrop-blur-xl border border-indigo-500/30 rounded-2xl p-3.5 shadow-2xl flex items-center gap-3">
+      
+      <!-- Icon -->
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center text-xl shrink-0 shadow-md">
+        📲
+      </div>
+
+      <!-- Text Content -->
+      <div class="min-w-0 flex-1">
+        <h4 class="text-xs font-bold text-white leading-tight">
+          Instalar App Diaconato
+        </h4>
+        <p class="text-[10px] text-slate-400 mt-0.5 leading-snug">
+          Acesso rápido direto da sua tela inicial
+        </p>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button 
+          type="button" 
+          (click)="install()"
+          class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition-all active:scale-95">
+          Instalar
+        </button>
+        <button 
+          type="button" 
+          (click)="dismiss()"
+          title="Agora não"
+          class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors text-xs">
+          ✕
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

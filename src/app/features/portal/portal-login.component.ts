@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ObreiroAuthService } from '../../core/services/obreiro-auth.service';
+import { PwaService } from '../../core/services/pwa.service';
 
 @Component({
   selector: 'app-portal-login',
@@ -13,6 +14,7 @@ import { ObreiroAuthService } from '../../core/services/obreiro-auth.service';
 export class PortalLoginComponent {
   private fb = inject(FormBuilder);
   public obreiroAuth = inject(ObreiroAuthService);
+  public pwaService = inject(PwaService);
   private router = inject(Router);
 
   form: FormGroup = this.fb.group({

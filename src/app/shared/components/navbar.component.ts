@@ -3,6 +3,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { ObreiroAuthService } from '../../core/services/obreiro-auth.service';
+import { PwaService } from '../../core/services/pwa.service';
 import { ROLE_LABELS, ROLE_BADGE_STYLES, UserRole } from '../../core/models/usuario.model';
 
 @Component({
@@ -14,6 +15,7 @@ import { ROLE_LABELS, ROLE_BADGE_STYLES, UserRole } from '../../core/models/usua
 export class NavbarComponent {
   authService = inject(AuthService);
   obreiroAuth = inject(ObreiroAuthService);
+  pwaService = inject(PwaService);
   private router = inject(Router);
   private elementRef = inject(ElementRef);
 

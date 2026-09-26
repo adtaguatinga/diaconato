@@ -37,7 +37,12 @@ export const authGuard: CanActivateFn = async (route, state) => {
     return true;
   }
 
-  // Redireciona para o login administrativo caso não esteja autenticado
+  // Se estiver acessando a raiz e não tiver sessão, redireciona para a tela inicial padrão do Diácono
+  if (state.url === '/' || state.url === '') {
+    return router.createUrlTree(['/portal/login']);
+  }
+
+  // Redireciona para o login administrativo caso não esteja autenticado em rota específica
   return router.createUrlTree(['/login'], {
     queryParams: { returnUrl: state.url }
   });
