@@ -1,0 +1,153 @@
+{
+  "configVersion": 1,
+  "timestamp": 1790450277781,
+  "index": "/diaconato/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/diaconato/chunk-4JjQrU-N.js",
+        "/diaconato/chunk-B0pFBdA1.js",
+        "/diaconato/chunk-BApVXDcE.js",
+        "/diaconato/chunk-BFuCiBqI.js",
+        "/diaconato/chunk-BM5ppI0F.js",
+        "/diaconato/chunk-BQDjyH-k.js",
+        "/diaconato/chunk-BWdEdi_q.js",
+        "/diaconato/chunk-BZ3iTmyr.js",
+        "/diaconato/chunk-Bee0WAJz.js",
+        "/diaconato/chunk-Bgf2zFKO.js",
+        "/diaconato/chunk-BjQXb6nY.js",
+        "/diaconato/chunk-Bmc-XpmV.js",
+        "/diaconato/chunk-ByDxB7_j.js",
+        "/diaconato/chunk-CK5PtF1s.js",
+        "/diaconato/chunk-COSdUuP4.js",
+        "/diaconato/chunk-CPtN-gQB.js",
+        "/diaconato/chunk-CWQ_eOgu.js",
+        "/diaconato/chunk-Ca9XwJTv.js",
+        "/diaconato/chunk-CbYpFNm4.js",
+        "/diaconato/chunk-Cq5x00C3.js",
+        "/diaconato/chunk-D0s6yxms.js",
+        "/diaconato/chunk-DCcsXVNo.js",
+        "/diaconato/chunk-DKHp7YsE.js",
+        "/diaconato/chunk-DXknHyEU.js",
+        "/diaconato/chunk-DegSTY_I.js",
+        "/diaconato/chunk-FtlPBu0m.js",
+        "/diaconato/chunk-Ilz5Not7.js",
+        "/diaconato/chunk-RBjQK2TP.js",
+        "/diaconato/chunk-XToIy0H5.js",
+        "/diaconato/chunk-YRmfvZHn.js",
+        "/diaconato/chunk-ZWPYnYoH.js",
+        "/diaconato/chunk-ee1wHf-w.js",
+        "/diaconato/chunk-iCD082au.js",
+        "/diaconato/chunk-uz4g6ehC.js",
+        "/diaconato/favicon.ico",
+        "/diaconato/index.html",
+        "/diaconato/main-HWRSX3TV.js",
+        "/diaconato/manifest.webmanifest",
+        "/diaconato/styles-LV7XBZQY.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/diaconato/icons/apple-touch-icon.png",
+        "/diaconato/icons/icon-128x128.png",
+        "/diaconato/icons/icon-144x144.png",
+        "/diaconato/icons/icon-152x152.png",
+        "/diaconato/icons/icon-192x192.png",
+        "/diaconato/icons/icon-384x384.png",
+        "/diaconato/icons/icon-512x512.png",
+        "/diaconato/icons/icon-72x72.png",
+        "/diaconato/icons/icon-96x96.png",
+        "/diaconato/icons/icon-maskable-192x192.png",
+        "/diaconato/icons/icon-maskable-512x512.png",
+        "/diaconato/logo_adtag.jpg"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/diaconato/chunk-4JjQrU-N.js": "1052efe4ad0fe29578d905d59a668713b4992bc1",
+    "/diaconato/chunk-B0pFBdA1.js": "2a0f7163596f1110b317d9915c0ea8bbc19dfd1d",
+    "/diaconato/chunk-BApVXDcE.js": "37cd5d9dbac9271e6c087fa37ec6a35c59ac8ed6",
+    "/diaconato/chunk-BFuCiBqI.js": "8c8917367339a63f5d3ba51a06be54c939badef6",
+    "/diaconato/chunk-BM5ppI0F.js": "a0d02f98573e7023fe07773d2edf3eb8cacee751",
+    "/diaconato/chunk-BQDjyH-k.js": "81a2f7fb46885cfdbb16196fdb460f06841f9945",
+    "/diaconato/chunk-BWdEdi_q.js": "b4cd187bc2a3d557d0e1ee43f050148b8425728e",
+    "/diaconato/chunk-BZ3iTmyr.js": "72a0226ebe7e7d627616bc084a97699013de778e",
+    "/diaconato/chunk-Bee0WAJz.js": "504052e4735ad1fc528823940aa954cf5acaf5b2",
+    "/diaconato/chunk-Bgf2zFKO.js": "f2d39a28aa64ba596aa7bbf29e95dc9df6d33107",
+    "/diaconato/chunk-BjQXb6nY.js": "f84a14a40d848a17a63818c197a602f352a62b1b",
+    "/diaconato/chunk-Bmc-XpmV.js": "ecebf6b99ea2d83feb8dab4bcd848b44df320436",
+    "/diaconato/chunk-ByDxB7_j.js": "b4dbdd3676f3475c7c02c60169f80c19b5730820",
+    "/diaconato/chunk-CK5PtF1s.js": "a87d525ef7decccfe4745d46613737bea0382cd2",
+    "/diaconato/chunk-COSdUuP4.js": "1cb5c42e8d020a9048b4bd0e4f5f90c2c9cfb798",
+    "/diaconato/chunk-CPtN-gQB.js": "30bef077ca5d4ece1b8793bf74057322a7e266c3",
+    "/diaconato/chunk-CWQ_eOgu.js": "baf634dba9ada5eecf3f0d50aee8e6e92f39f1ba",
+    "/diaconato/chunk-Ca9XwJTv.js": "3832b32c8d7c28c98fecef51bcbdf850dddcd5f5",
+    "/diaconato/chunk-CbYpFNm4.js": "f1589d7b7fae39fd7f785ec139752359ac2f7119",
+    "/diaconato/chunk-Cq5x00C3.js": "45bd8a32ee18d352d25ebe1d400f0dc1255e2c49",
+    "/diaconato/chunk-D0s6yxms.js": "0c120f118bd7061c017ea7225fff52f8b37feacc",
+    "/diaconato/chunk-DCcsXVNo.js": "6ee6ea10d9ccd10e3ba49ed96698fcb1a9970df3",
+    "/diaconato/chunk-DKHp7YsE.js": "7e6cdc7b243228b48ffc03fa97ae933186a1aa26",
+    "/diaconato/chunk-DXknHyEU.js": "10e898da43d90d442bfaf3fef51f9c3196848602",
+    "/diaconato/chunk-DegSTY_I.js": "d5c30b09306a07dc0d5fd47b2d2f95e3bdcf3f7b",
+    "/diaconato/chunk-FtlPBu0m.js": "3b3b715ed9cd308990c7aa0bdad5abf81dc33f60",
+    "/diaconato/chunk-Ilz5Not7.js": "3c7bd290655e817ff01f20c205b6a0623161b2e9",
+    "/diaconato/chunk-RBjQK2TP.js": "5dfaecf405d7b5bbe057b2f4a7340bb4fff156a2",
+    "/diaconato/chunk-XToIy0H5.js": "a3cf7539b13d7c9c5375a290261bbf0f43f01851",
+    "/diaconato/chunk-YRmfvZHn.js": "c4769f23ea1e62b8be997b60a47c75a586557daa",
+    "/diaconato/chunk-ZWPYnYoH.js": "a35cb3ffa6f7536e4c0672c8a96bad41f1f1683b",
+    "/diaconato/chunk-ee1wHf-w.js": "4686000189e5d9a8bab5a0b7c7e9a4560263c46d",
+    "/diaconato/chunk-iCD082au.js": "24fe91106ccf29f4de4e2cc48f6009840b178ff7",
+    "/diaconato/chunk-uz4g6ehC.js": "92c323fb7f8d0ba9f65b6d7f3468a244d34960fe",
+    "/diaconato/favicon.ico": "9c39f434fe1261f68c5e3eefdf734630d99c5670",
+    "/diaconato/icons/apple-touch-icon.png": "6ca0ef7a76d19177d0315aa073877c617a7f6384",
+    "/diaconato/icons/icon-128x128.png": "b1031390238bb8489f27a3cfbed1d56beea16d3f",
+    "/diaconato/icons/icon-144x144.png": "61b169ffaa35a793a986bea2f66a52709a33bf2b",
+    "/diaconato/icons/icon-152x152.png": "40078b13518c8e33cd3d93ad9541e04f620faf94",
+    "/diaconato/icons/icon-192x192.png": "57c5b57ff30e7e96fb591148093506153da8d9e8",
+    "/diaconato/icons/icon-384x384.png": "917195d895d56649b144341f284b38bb9f067ecc",
+    "/diaconato/icons/icon-512x512.png": "439d637169b15d5e56682b816ca8a12111720358",
+    "/diaconato/icons/icon-72x72.png": "3055f8fe6ccb7883c200a6c3197d1f660f34b042",
+    "/diaconato/icons/icon-96x96.png": "5745e70dc7f5fb48c8b500c3cc6fb364937d31c6",
+    "/diaconato/icons/icon-maskable-192x192.png": "619dd36c6eaf3f626e662caec1c79d2d31c1936a",
+    "/diaconato/icons/icon-maskable-512x512.png": "078606c3790dd954e4aac7598f03cc48ab59efdc",
+    "/diaconato/index.html": "2ce78e650e2dcb2e5f5f17f4402628bcd1095355",
+    "/diaconato/logo_adtag.jpg": "be19bd22bb2109b26916b293fceccbfe2cf9ad98",
+    "/diaconato/main-HWRSX3TV.js": "6eb53863692c4e0641eb937d6a07f4a8b8cbb6e9",
+    "/diaconato/manifest.webmanifest": "0306f7af9e261ac5a64d45a6c64b412fce593ed6",
+    "/diaconato/styles-LV7XBZQY.css": "bea95575703166132e7ebee1665a9958704752ef"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}
